@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Omni Mod Store — Premium APK & Game Mods</title>
+
+<link rel="icon" type="image/jpeg" href="Screenshot_2026_0708_223931.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -311,7 +314,7 @@
     top: 55px;
     right: 0;
     width: 320px;
-    background: rgba(12, 18, 28, 0.95);
+    background: rgba(12, 18, 25, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(0, 242, 254, 0.15);
     border-radius: var(--radius);
@@ -1044,7 +1047,7 @@
         <div class="nav-dropdown" id="dropNotifications">
           <div class="dropdown-header">Latest Updates</div>
           <div class="dropdown-body">
-            <div class="dropdown-item">🔥 <strong>YouTube Pro v19.16</strong> modded by Imaanshu has been added!</div>
+            <div class="dropdown-item">🔥Developedr by <strong>IMAANSHU</strong> N</div>
             <div class="dropdown-item">✨ <strong>Insta Pro APK v15.20</strong> updated with secure lightning fast servers.</div>
             <div class="dropdown-item">🎮 <strong>GTA III Mobile</strong> now available for Sandbox/Action setup.</div>
           </div>
@@ -1320,7 +1323,7 @@ const appsDatabase = Object.freeze([
     updated: true,
     featured: true,
     imgUrl: "https://apps2app.com/wp-content/uploads/2026/04/grand-theft-auto-iii-150x150.png",
-    downloadUrl: "https://files.apps2app.com/ROOT/All%20Documents%20File/Folder%201/GTA_III_v1.9_(14)_Mod.apk"
+    downloadUrl: "https://dc438.4sync.com/download/LjLpPKDm/GTA-III-v110106-mod.apk?tsid=20260708-164437-663ef1e8&sbsr=2cf9df29c8504c1f394d585ef68b21aeb84&bip=MjIzLjIyOC43OC4xMDk&lgfp=20"
   },
   {
     id: "youtube-vanced",
@@ -1336,6 +1339,21 @@ const appsDatabase = Object.freeze([
     featured: false,
     imgUrl: "https://apps2app.com/wp-content/uploads/2026/01/YouTube-Vanced-150x150.png",
     downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/YouTube_Vanced_v21.26.364_(1561182083)-APPS2APP.COM.apk"
+  },
+  {
+    id: "youtube-squid-game",
+    name: "YouTube Squid Game",
+    type: "app",
+    version: "v21.26.364",
+    dev: "Sam MOD.",
+    cat: "App \u2022 media",
+    meta: "\u2B50 5.0 (116MB)",
+    rating: 5.0,
+    size: "116MB",
+    updated: true,
+    featured: false,
+    imgUrl: "https://apps2app.com/wp-content/uploads/2026/01/youtube-squid-game-apk-150x150.webp",
+    downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/YouTube_Squid_Game_v21.26.364_(1561182083)-APPS2APP.COM.apk"
   },
   {
     id: "microsoft-corporation",
@@ -1365,7 +1383,7 @@ const appsDatabase = Object.freeze([
     updated: false,
     featured: false,
     imgUrl: "https://apps2app.com/wp-content/uploads/2026/04/hill-climb-racing-150x150.png",
-    downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Games/hill-climb-racing-mod_v1.69.0_(876)-APPS2APP.COM.apk"
+    downloadUrl: "https://download.liteapks.dev/Hill%20Climb%20Racing/Hill-Climb-Racing-1.70.0-mod.apk?token=TVRjNE16VXpNVGt3T0E9PQ%3D%3D"
   },
   {
     id: "proton-vpn",
@@ -1485,7 +1503,7 @@ let heroAutoplay = null;
 let bookmarkedIds = JSON.parse(localStorage.getItem('omni_bookmarks')) || [];
 
 /* =============================================
-   OMNIMOD FILTER LOGIC (तेरी वेबसाइट फ़िल्टर इंजन)
+   OMNIMOD FILTER LOGIC
    ============================================= */
 function cleanAndFormatSource(appName) {
   const brandWebsite = "omnimod.com";
@@ -1549,7 +1567,7 @@ supportForm.addEventListener('submit', (e) => {
     
     // Redirecting to mail client safely
     setTimeout(() => {
-      window.location.href = `mailto:support@omnimod.com?subject=OmniMod Heat Support Ticket&body=${encodeURIComponent(userMessage)}`;
+      window.location.href = `mailto:takano3dhunter@gmail.com?subject=OmniMod Heat Support Ticket&body=${encodeURIComponent(userMessage)}`;
     }, 800);
   }
 });
@@ -1657,7 +1675,7 @@ toggleAura.addEventListener('change', () => {
 });
 
 /* =============================================
-   HERO SLIDER (With omnimod.com filter)
+   HERO SLIDER
    ============================================= */
 function getFeaturedApps() {
   return appsDatabase.filter(a => a.featured);
@@ -1669,7 +1687,6 @@ function renderHero() {
 
   heroTrack.innerHTML = featured.map((app, i) => {
     const bc = badgeColors[i % badgeColors.length];
-    // Filter applied here to override standard source displaying
     const filteredDisplayName = cleanAndFormatSource(app.name);
     
     return `
@@ -1796,7 +1813,7 @@ function renderFilterTabs() {
 }
 
 /* =============================================
-   APP GRID RENDERING (With Filter Implemented)
+   APP GRID RENDERING
    ============================================= */
 function renderGrid() {
   const data = getFilteredData();
@@ -1816,8 +1833,6 @@ function renderGrid() {
   appGridEl.innerHTML = data.map(app => {
     const idx = appsDatabase.indexOf(app);
     const isSaved = bookmarkedIds.includes(app.id) ? 'is-bookmarked' : '';
-    
-    // फ़िल्टर यहाँ काम कर रहा है - कचरा यूआरएल की जगह तेरी वेबसाइट का नाम
     const filteredNameString = cleanAndFormatSource(app.name);
 
     return `
