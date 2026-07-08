@@ -74,32 +74,32 @@
     width: 600px; height: 600px;
     background: radial-gradient(circle, var(--accent-cyan), transparent 70%);
     top: -10%; left: -5%;
-    animation: auraFloat1 18s ease-in-out infinite;
   }
+  .aura-animate .aura-spot--cyan { animation: auraFloat1 18s ease-in-out infinite; }
 
   .aura-spot--purple {
     width: 500px; height: 500px;
     background: radial-gradient(circle, var(--accent-purple), transparent 70%);
     bottom: -10%; right: -5%;
-    animation: auraFloat2 22s ease-in-out infinite;
   }
+  .aura-animate .aura-spot--purple { animation: auraFloat2 22s ease-in-out infinite; }
 
   .aura-spot--pink {
     width: 350px; height: 350px;
     background: radial-gradient(circle, var(--accent-pink), transparent 70%);
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    animation: auraFloat3 15s ease-in-out infinite;
     opacity: 0.2;
   }
+  .aura-animate .aura-spot--pink { animation: auraFloat3 15s ease-in-out infinite; }
 
   .aura-spot--cyan2 {
     width: 400px; height: 400px;
     background: radial-gradient(circle, var(--accent-cyan), transparent 70%);
     bottom: 20%; left: 10%;
-    animation: auraFloat4 20s ease-in-out infinite;
     opacity: 0.15;
   }
+  .aura-animate .aura-spot--cyan2 { animation: auraFloat4 20s ease-in-out infinite; }
 
   @keyframes auraFloat1 {
     0%, 100% { transform: translate(0, 0) scale(1); }
@@ -261,12 +261,13 @@
   .search-clear.visible { display: flex; }
   .search-clear:hover { background: rgba(255,255,255,0.12); color: var(--fg); }
 
-  /* === NAV ACTIONS === */
+  /* === NAV ACTIONS & DROPDOWNS === */
   .nav-actions {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    position: relative;
   }
 
   .nav-btn {
@@ -284,7 +285,7 @@
     position: relative;
   }
 
-  .nav-btn:hover {
+  .nav-btn:hover, .nav-btn.active {
     border-color: var(--accent-cyan);
     color: var(--accent-cyan);
     background: rgba(0,242,254,0.05);
@@ -302,7 +303,87 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
   }
+
+  .nav-dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: 320px;
+    background: rgba(12, 18, 28, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+  }
+
+  .nav-dropdown.show { display: flex; }
+  .dropdown-header {
+    font-weight: 800;
+    font-size: 15px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 8px;
+    color: var(--accent-cyan);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dropdown-body {
+    max-height: 240px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dropdown-item {
+    font-size: 13px;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.02);
+    border: 1px solid transparent;
+  }
+  .dropdown-item:hover { border-color: rgba(0,242,254,0.1); background: rgba(0,242,254,0.02); }
+
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: rgba(255,255,255,0.1);
+    transition: .3s;
+    border-radius: 20px;
+  }
+  .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-cyan); }
+  .toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 14px; width: 14px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+  }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
 
   /* === HERO SECTION === */
   .hero-section {
@@ -335,30 +416,10 @@
     font-size: 14px;
   }
 
-  .section-title .icon-wrap.cyan {
-    background: rgba(0,242,254,0.1);
-    color: var(--accent-cyan);
-  }
+  .section-title .icon-wrap.cyan { background: rgba(0,242,254,0.1); color: var(--accent-cyan); }
+  .section-title .icon-wrap.purple { background: rgba(155,81,224,0.1); color: var(--accent-purple); }
 
-  .section-title .icon-wrap.purple {
-    background: rgba(155,81,224,0.1);
-    color: var(--accent-purple);
-  }
-
-  .section-title .icon-wrap.pink {
-    background: rgba(255,45,117,0.1);
-    color: var(--accent-pink);
-  }
-
-  .section-title .icon-wrap.green {
-    background: rgba(0,230,118,0.1);
-    color: var(--accent-green);
-  }
-
-  .slider-controls {
-    display: flex;
-    gap: 6px;
-  }
+  .slider-controls { display: flex; gap: 6px; }
 
   .slider-btn {
     width: 36px; height: 36px;
@@ -392,10 +453,7 @@
     transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  .hero-slide {
-    min-width: 100%;
-    padding: 0;
-  }
+  .hero-slide { min-width: 100%; padding: 0; }
 
   .hero-card {
     position: relative;
@@ -446,13 +504,9 @@
   }
 
   .hero-card:hover .hero-icon-wrap { transform: scale(1.05) rotate(-2deg); }
+  .hero-icon-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-  .hero-icon-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-
-  .hero-info { flex: 1; }
+  .hero-info { flex: 1; min-width: 0; }
 
   .hero-badges {
     display: flex;
@@ -472,7 +526,6 @@
 
   .badge-mod.cyan { background: rgba(0,242,254,0.12); color: var(--accent-cyan); }
   .badge-mod.purple { background: rgba(155,81,224,0.12); color: var(--accent-purple); }
-  .badge-mod.pink { background: rgba(255,45,117,0.12); color: var(--accent-pink); }
   .badge-mod.green { background: rgba(0,230,118,0.12); color: var(--accent-green); }
 
   .hero-name {
@@ -481,12 +534,18 @@
     letter-spacing: -0.8px;
     margin-bottom: 4px;
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .hero-dev {
     font-size: 14px;
     color: var(--fg-muted);
     margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .hero-meta {
@@ -525,8 +584,6 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 40px rgba(0,242,254,0.4);
   }
-
-  .hero-dl-btn i { font-size: 13px; }
 
   .slider-dots {
     display: flex;
@@ -587,18 +644,8 @@
   }
 
   .filter-tab span { position: relative; z-index: 1; }
-
-  .filter-tab:hover {
-    border-color: rgba(0,242,254,0.3);
-    color: var(--fg);
-  }
-
-  .filter-tab.active {
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 4px 20px var(--glow-cyan);
-  }
-
+  .filter-tab:hover { border-color: rgba(0,242,254,0.3); color: var(--fg); }
+  .filter-tab.active { border-color: transparent; color: #fff; box-shadow: 0 4px 20px var(--glow-cyan); }
   .filter-tab.active::before { opacity: 1; }
 
   .filter-count {
@@ -613,10 +660,6 @@
     font-weight: 700;
     margin-left: 6px;
     padding: 0 5px;
-  }
-
-  .filter-tab.active .filter-count {
-    background: rgba(255,255,255,0.2);
   }
 
   /* === RESULTS INFO === */
@@ -663,7 +706,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    cursor: default;
+    cursor: pointer;
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     transform-style: preserve-3d;
     perspective: 800px;
@@ -675,6 +718,11 @@
     box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 30px rgba(0,242,254,0.05);
   }
 
+  .app-card.is-bookmarked {
+    border-color: rgba(155, 81, 224, 0.4);
+    background: rgba(155, 81, 224, 0.03);
+  }
+
   .app-card-icon {
     flex-shrink: 0;
     width: 64px; height: 64px;
@@ -682,28 +730,22 @@
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    position: relative;
   }
 
-  .app-card:hover .app-card-icon {
-    transform: scale(1.08) rotate(-3deg);
-    box-shadow: 0 8px 30px rgba(0,242,254,0.15);
-  }
-
-  .app-card-icon img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  .app-card:hover .app-card-icon { transform: scale(1.08) rotate(-3deg); }
+  .app-card-icon img { width: 100%; height: 100%; object-fit: cover; }
 
   .app-card-body { flex: 1; min-width: 0; }
 
   .app-card-top {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     margin-bottom: 2px;
   }
+
+  .app-card-name-wrap { display: flex; align-items: center; gap: 6px; min-width: 0; }
 
   .app-card-name {
     font-size: 15px;
@@ -711,7 +753,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    letter-spacing: -0.2px;
   }
 
   .app-card-version {
@@ -734,23 +775,28 @@
     text-overflow: ellipsis;
   }
 
-  .app-card-bottom {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .app-card-tag {
-    font-size: 11px;
-    color: var(--fg-muted);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
+  .app-card-bottom { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .app-card-tag { font-size: 11px; color: var(--fg-muted); display: flex; align-items: center; gap: 4px; }
   .app-card-tag.updated { color: var(--accent-green); }
   .app-card-tag.rating { color: #ffc107; }
+  .app-card-tag.bookmark-star { color: var(--accent-purple); display: none; }
+  .app-card.is-bookmarked .bookmark-star { display: inline-flex; }
+
+  .app-card-actions { display: flex; align-items: center; gap: 6px; }
+
+  .app-card-btn-inline {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.02);
+    color: var(--fg-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
 
   .app-card-dl {
     flex-shrink: 0;
@@ -766,236 +812,194 @@
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 3px 15px var(--glow-cyan);
-    position: relative;
-    overflow: hidden;
   }
 
-  .app-card-dl::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #fff, transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .app-card-dl:hover {
-    transform: scale(1.08);
-    box-shadow: 0 5px 25px rgba(0,242,254,0.45);
-  }
-
-  .app-card-dl:hover::before { opacity: 0.2; }
-
-  .app-card-dl:active { transform: scale(0.96); }
+  .app-card-dl:hover { transform: scale(1.08); box-shadow: 0 5px 25px rgba(0,242,254,0.45); }
 
   /* === EMPTY STATE === */
-  .empty-state {
-    text-align: center;
-    padding: 80px 20px;
-    grid-column: 1 / -1;
-  }
-
-  .empty-state i {
-    font-size: 48px;
-    color: var(--fg-muted);
-    opacity: 0.3;
-    margin-bottom: 16px;
-  }
-
-  .empty-state h3 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--fg-muted);
-  }
-
-  .empty-state p { font-size: 14px; color: var(--fg-muted); opacity: 0.6; }
+  .empty-state { text-align: center; padding: 80px 20px; grid-column: 1 / -1; }
+  .empty-state i { font-size: 48px; color: var(--fg-muted); opacity: 0.3; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--fg-muted); }
 
   /* === STATS BAR === */
-  .stats-bar {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 40px;
-  }
-
-  .stat-card {
-    border-radius: var(--radius);
-    border: 1px solid var(--card-border);
-    background: var(--card);
-    backdrop-filter: blur(16px);
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s;
-  }
-
-  .stat-card:hover {
-    border-color: rgba(0,242,254,0.15);
-    transform: translateY(-2px);
-  }
-
-  .stat-number {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -1px;
-    margin-bottom: 4px;
-  }
-
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+  .stat-card { border-radius: var(--radius); border: 1px solid var(--card-border); background: var(--card); backdrop-filter: blur(16px); padding: 20px; text-align: center; }
+  .stat-number { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
   .stat-number.cyan { color: var(--accent-cyan); }
   .stat-number.purple { color: var(--accent-purple); }
   .stat-number.pink { color: var(--accent-pink); }
   .stat-number.green { color: var(--accent-green); }
+  .stat-label { font-size: 12px; color: var(--fg-muted); font-weight: 600; text-transform: uppercase; }
 
-  .stat-label {
-    font-size: 12px;
-    color: var(--fg-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* === FOOTER === */
+  /* === PREMIUM FOOTER SECTION === */
   footer {
     border-top: 1px solid var(--card-border);
     padding: 40px 0;
     margin-top: 20px;
     text-align: center;
   }
-
-  .footer-logo {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
-
-  .footer-logo span {
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .footer-text {
-    font-size: 13px;
-    color: var(--fg-muted);
-    line-height: 1.8;
-  }
-
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 16px;
-  }
-
-  .footer-links a {
-    color: var(--fg-muted);
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--accent-cyan); }
-
-  /* === TOAST === */
-  .toast-container {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .toast {
-    padding: 14px 20px;
-    border-radius: 12px;
-    background: rgba(12,18,28,0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    color: var(--fg);
-    font-size: 13px;
-    font-family: var(--font-ui);
-    display: flex;
+  .footer-logo { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .footer-logo span { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .footer-text { font-size: 13px; color: var(--fg-muted); line-height: 1.8; }
+  
+  /* Google Button Customer Support Styles */
+  .google-support-btn {
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    animation: toastIn 0.4s ease, toastOut 0.4s ease 2.6s forwards;
-    max-width: 340px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--fg);
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+  }
+  .google-support-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+    transform: translateY(-2px);
+  }
+  .google-support-btn i { font-size: 15px; }
+
+  /* === CUSTOMER HEAT SUPPORT MODAL === */
+  .support-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(4, 6, 10, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .support-modal.show { display: flex; }
+  .support-box {
+    background: rgba(12, 18, 25, 0.95);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    width: 100%;
+    max-width: 440px;
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 40px rgba(0,242,254,0.05);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+  .support-modal.show .support-box { transform: scale(1); }
+  .support-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; color: var(--fg); display: flex; align-items: center; gap: 10px; }
+  .support-title i { color: var(--accent-cyan); animation: pulseHeat 2s infinite; }
+  .support-desc { font-size: 13px; color: var(--fg-muted); margin-bottom: 20px; }
+  
+  @keyframes pulseHeat {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); color: var(--accent-pink); }
   }
 
+  .support-textarea {
+    width: 100%;
+    height: 120px;
+    background: rgba(6, 9, 14, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    padding: 14px;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    outline: none;
+    resize: none;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .support-textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px var(--glow-cyan); }
+  
+  .support-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .support-btn { padding: 10px 22px; border-radius: 50px; font-family: var(--font-ui); font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+  .support-btn--submit { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px var(--glow-cyan); }
+  .support-btn--submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,242,254,0.3); }
+  .support-btn--cancel { background: rgba(255,255,255,0.05); color: var(--fg-muted); border: 1px solid var(--card-border); }
+  .support-btn--cancel:hover { background: rgba(255,255,255,0.1); color: var(--fg); }
+
+  /* === TOAST === */
+  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+  .toast { padding: 14px 20px; border-radius: 12px; background: rgba(12,18,28,0.95); backdrop-filter: blur(20px); border: 1px solid var(--card-border); color: var(--fg); font-size: 13px; font-family: var(--font-ui); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); animation: toastIn 0.4s ease; max-width: 340px; }
   .toast i { color: var(--accent-green); font-size: 16px; }
-
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  @keyframes toastOut {
-    from { opacity: 1; transform: translateY(0) scale(1); }
-    to { opacity: 0; transform: translateY(-10px) scale(0.95); }
-  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
   /* === SCROLL REVEAL === */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* === RESPONSIVE === */
+  /* === 100% COMPLETE MOBILE & RESPONSIVE ENGINE === */
   @media (max-width: 1024px) {
     .stats-bar { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 768px) {
-    .nav-inner { height: 60px; gap: 12px; }
+    .nav-inner { height: 62px; gap: 10px; }
     .logo-text { display: none; }
     .search-container { max-width: none; }
-    .nav-actions .nav-btn:not(:first-child) { display: none; }
-
-    .hero-card-content { padding: 20px; gap: 16px; }
-    .hero-icon-wrap { width: 80px; height: 80px; border-radius: 20px; }
+    .search-input { height: 38px; font-size: 13px; padding: 0 35px 0 38px; }
+    .search-container i { left: 14px; font-size: 12px; }
+    .nav-btn { width: 36px; height: 36px; border-radius: 10px; font-size: 13px; }
+    
+    .hero-card { min-height: auto; }
+    .hero-card-content { padding: 18px; gap: 16px; flex-direction: row; text-align: left; }
+    .hero-icon-wrap { width: 74px; height: 74px; border-radius: 18px; }
     .hero-name { font-size: 20px; }
-    .hero-dl-btn { padding: 10px 24px; font-size: 13px; }
+    .hero-dev { font-size: 12px; margin-bottom: 4px; }
+    .hero-meta { gap: 10px; font-size: 11px; margin-bottom: 12px; }
+    .hero-dl-btn { padding: 8px 20px; font-size: 12px; }
 
-    .app-grid { grid-template-columns: 1fr; }
+    .app-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 40px; }
+    .app-card { padding: 14px 16px; gap: 14px; }
+    .app-card-icon { width: 56px; height: 56px; border-radius: 14px; }
+    .app-card-name { font-size: 14px; }
+    .app-card-dev { font-size: 11px; margin-bottom: 4px; }
+    .app-card-bottom { gap: 8px; }
+    .app-card-tag { font-size: 10px; }
+    .app-card-dl { width: 44px; height: 36px; border-radius: 10px; font-size: 14px; }
 
-    .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .stat-card { padding: 14px; }
-    .stat-number { font-size: 22px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
+    .stat-card { padding: 12px; border-radius: 12px; }
+    .stat-number { font-size: 20px; }
+    .stat-label { font-size: 10px; }
 
-    .section-title { font-size: 20px; }
+    .section-title { font-size: 18px; }
+    .nav-dropdown { width: 270px; top: 50px; right: -10px; }
+    .support-box { padding: 22px; }
+    .support-title { font-size: 18px; }
+    .toast-container { bottom: 16px; left: 16px; right: 16px; }
+    .toast { max-width: none; width: 100%; }
   }
 
   @media (max-width: 480px) {
-    .hero-card-content { flex-direction: column; text-align: center; }
+    .hero-card-content { flex-direction: column; text-align: center; justify-content: center; align-items: center; }
+    .hero-icon-wrap { width: 80px; height: 80px; margin: 0 auto; }
     .hero-badges { justify-content: center; }
     .hero-meta { justify-content: center; }
-    .filter-section { gap: 6px; }
-    .filter-tab { padding: 7px 14px; font-size: 13px; }
+    .filter-section { gap: 6px; justify-content: center; }
+    .filter-tab { padding: 6px 14px; font-size: 12px; }
+    .filter-count { min-width: 16px; height: 16px; font-size: 9px; margin-left: 4px; }
+    .results-bar { flex-direction: column; gap: 10px; align-items: flex-start; }
+    .sort-select { width: 100%; }
   }
 
-  /* === REDUCED MOTION === */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     .aura-spot { animation: none !important; }
   }
 </style>
 </head>
-<body>
+<body class="aura-animate">
 
-<!-- AMBIENT AURA ENGINE -->
-<div class="aura-layer" aria-hidden="true">
+<div class="aura-layer" aria-hidden="true" id="auraLayer">
   <div class="aura-spot aura-spot--cyan"></div>
   <div class="aura-spot aura-spot--purple"></div>
   <div class="aura-spot aura-spot--pink"></div>
@@ -1003,12 +1007,24 @@
 </div>
 <div class="noise-overlay" aria-hidden="true"></div>
 
-<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<div class="support-modal" id="supportModal" role="dialog" aria-labelledby="supportTitle">
+  <div class="support-box">
+    <div class="support-title" id="supportTitle"><i class="fa-solid fa-fire"></i> Heat Support Box</div>
+    <p class="support-desc">Something's wrong or not working? Drop your message straight to our team and we'll fix it immediately.</p>
+    <form id="supportForm">
+      <textarea class="support-textarea" id="supportTextarea" placeholder="Write your problem here... (e.g. YouTube Pro link is down, File not downloading)" required></textarea>
+      <div class="support-actions">
+        <button type="button" class="support-btn support-btn--cancel" id="btnCancelSupport">Cancel</button>
+        <button type="submit" class="support-btn support-btn--submit">Submit Ticket</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <div class="app-wrapper">
 
-  <!-- HEADER -->
   <header>
     <nav class="nav-inner" role="navigation" aria-label="Main navigation">
       <a href="#" class="logo" aria-label="Omni Mod Store Home">
@@ -1021,15 +1037,45 @@
         <button class="search-clear" id="searchClear" aria-label="Clear search"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="nav-actions">
-        <button class="nav-btn" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge">0</span></button>
-        <button class="nav-btn" aria-label="Bookmarks"><i class="fa-regular fa-bookmark"></i></button>
-        <button class="nav-btn" aria-label="Settings"><i class="fa-solid fa-gear"></i></button>
+        <button class="nav-btn" id="btnNotifications" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge" id="notifBadge">3</span></button>
+        <button class="nav-btn" id="btnBookmarks" aria-label="Bookmarks"><i class="fa-regular fa-bookmark"></i></button>
+        <button class="nav-btn" id="btnSettings" aria-label="Settings"><i class="fa-solid fa-gear"></i></button>
+
+        <div class="nav-dropdown" id="dropNotifications">
+          <div class="dropdown-header">Latest Updates</div>
+          <div class="dropdown-body">
+            <div class="dropdown-item">🔥 <strong>YouTube Pro v19.16</strong> modded by Imaanshu has been added!</div>
+            <div class="dropdown-item">✨ <strong>Insta Pro APK v15.20</strong> updated with secure lightning fast servers.</div>
+            <div class="dropdown-item">🎮 <strong>GTA III Mobile</strong> now available for Sandbox/Action setup.</div>
+          </div>
+        </div>
+
+        <div class="nav-dropdown" id="dropBookmarks">
+          <div class="dropdown-header">Your Bookmarks</div>
+          <div class="dropdown-body" id="bookmarksList">
+            <div style="font-size:12px; color:var(--fg-muted); text-align:center; padding:10px;">No bookmarks added yet.</div>
+          </div>
+        </div>
+
+        <div class="nav-dropdown" id="dropSettings">
+          <div class="dropdown-header">Preferences</div>
+          <div class="dropdown-body">
+            <div class="settings-row">
+              <span>Ambient Aura Lights</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggleAura" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div style="font-size:11px; color:var(--fg-muted); margin-top:5px;">Turning off lights can increase UI performance on low-end hardware.</div>
+          </div>
+        </div>
+
       </div>
     </nav>
   </header>
 
   <main>
-    <!-- STATS BAR -->
     <section class="stats-bar reveal" aria-label="Store statistics">
       <div class="stat-card">
         <div class="stat-number cyan" id="statApps">0</div>
@@ -1049,7 +1095,6 @@
       </div>
     </section>
 
-    <!-- HERO SLIDER -->
     <section class="hero-section reveal" aria-label="Featured applications">
       <div class="section-header">
         <h2 class="section-title">
@@ -1067,18 +1112,16 @@
       <div class="slider-dots" id="heroDots" role="tablist" aria-label="Slide navigation"></div>
     </section>
 
-    <!-- FILTER TABS -->
     <section class="reveal">
       <div class="section-header" style="margin-bottom:20px">
         <h2 class="section-title">
-          <span class="icon-wrap purple"><i class="fa-solid fa-grid-2"></i></span>
+          <span class="icon-wrap purple"><i class="fa-solid fa-layer-group"></i></span>
           All Mods
         </h2>
       </div>
       <div class="filter-section" role="tablist" aria-label="Category filter" id="filterTabs"></div>
     </section>
 
-    <!-- RESULTS BAR -->
     <div class="results-bar reveal" id="resultsBar">
       <span>Showing <strong id="resultCount">0</strong> mods</span>
       <select class="sort-select" id="sortSelect" aria-label="Sort by">
@@ -1086,14 +1129,13 @@
         <option value="name-asc">Name: A-Z</option>
         <option value="name-desc">Name: Z-A</option>
         <option value="rating">Highest Rated</option>
+        <option value="bookmarked">Only Bookmarked</option>
       </select>
     </div>
 
-    <!-- APP GRID -->
     <section class="app-grid" id="appGrid" aria-label="Application list"></section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="reveal">
     <div class="footer-logo"><span>Omni</span> Mod Store</div>
     <p class="footer-text">
@@ -1101,8 +1143,12 @@
       All files are hosted on secure external servers. Use at your own discretion.
     </p>
     <p class="footer-text" style="margin-top:16px; opacity:0.4; font-size:11px;">
-      &copy; 2025 Omni Mod Store.developer by Imaanshu.
+      &copy; 2026 Omni Mod Store. Developed by Imanshu.
     </p>
+    
+    <button class="google-support-btn" id="btnSupportOpen" aria-label="Contact Customer Support via Google Mail Box">
+      <i class="fa-brands fa-google"></i> Customer Support
+    </button>
   </footer>
 </div>
 
@@ -1238,7 +1284,7 @@ const appsDatabase = Object.freeze([
     version: "v26.27.5",
     dev: "True Software",
     cat: "Apps \u2022 Communication",
-    meta: "\u2B50 4.3 (104MBMB)",
+    meta: "\u2B50 4.3 (104MB)",
     rating: 4.3,
     size: "104MB",
     updated: true,
@@ -1283,9 +1329,9 @@ const appsDatabase = Object.freeze([
     version: "v21.26.364",
     dev: "Sam MOD.",
     cat: "App \u2022 media",
-    meta: "\u2B50 5.0 (98MB))",
+    meta: "\u2B50 5.0 (98MB)",
     rating: 5.0,
-    size: "98MBB",
+    size: "98MB",
     updated: true,
     featured: false,
     imgUrl: "https://apps2app.com/wp-content/uploads/2026/01/YouTube-Vanced-150x150.png",
@@ -1296,7 +1342,7 @@ const appsDatabase = Object.freeze([
     name: "Microsoft corporation",
     type: "app",
     version: "v30.0.440630001",
-    dev: "",
+    dev: "Microsoft",
     cat: "Games \u2022 Sandbox",
     meta: "\u2B50 4.9 (55MB)",
     rating: 4.9,
@@ -1307,34 +1353,34 @@ const appsDatabase = Object.freeze([
     downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/Copilot_v30.0.440630001_(440630001)_Mod-APPS2APP.COM.apk"
   },
   {
-    id: "bgmi-mod-menu",
-    name: "BGMI Mod Menu",
+    id: "hill-climb-racing",
+    name: "Hill climb racing MOD",
     type: "game",
-    version: "v3.2",
-    dev: "Krafton Inc.",
-    cat: "Games \u2022 Battle Royale",
-    meta: "\u2B50 4.3 (1.5GB)",
-    rating: 4.3,
-    size: "1.5GB",
+    version: "v1.69.0",
+    dev: "Fingersoft Inc.",
+    cat: "Games \u2022 racing",
+    meta: "\u2B50 4.0 (118MB)",
+    rating: 4.0,
+    size: "118MB",
     updated: false,
     featured: false,
-    imgUrl: "https://apps2app.com/wp-content/uploads/2026/03/BGMI-Mod-Menu-150x150.png",
-    downloadUrl: "https://apps2app.com/bgmi-mod-menu-apk/download/"
+    imgUrl: "https://apps2app.com/wp-content/uploads/2026/04/hill-climb-racing-150x150.png",
+    downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Games/hill-climb-racing-mod_v1.69.0_(876)-APPS2APP.COM.apk"
   },
   {
-    id: "carx-street",
-    name: "CarX Street",
-    type: "game",
-    version: "v1.8.3",
-    dev: "CarX Technologies",
-    cat: "Games \u2022 Racing",
-    meta: "\u2B50 4.7 (1.8GB)",
+    id: "proton-vpn",
+    name: "Proton VPN",
+    type: "app",
+    version: "v5.19.43.0",
+    dev: "proton AG",
+    cat: "app \u2022 VPN",
+    meta: "\u2B50 4.7 (59MB)",
     rating: 4.7,
-    size: "1.8GB",
+    size: "59MB",
     updated: true,
     featured: false,
-    imgUrl: "https://apps2app.com/wp-content/uploads/2026/03/CarX-Street-150x150.png",
-    downloadUrl: "https://apps2app.com/carx-street-mod-apk/download/"
+    imgUrl: "https://apps2app.com/wp-content/uploads/2026/07/proton-vpn-fast-secure-vpn-150x150.png",
+    downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/Proton_VPN_Premium_v5.19.43.0_605194300_Mod-APPS2APP.COM.apk"
   },
   {
     id: "tiktok-premium",
@@ -1352,34 +1398,34 @@ const appsDatabase = Object.freeze([
     downloadUrl: "https://www.mediafire.com/file/4qurbh0c5j24uwd/TikTok-v43.2.1-MOD-OTR-(APPS2APP.com).apk/file"
   },
   {
-    id: "whatsapp-plus",
-    name: "WhatsApp Plus",
+    id: "instasize-ai",
+    name: "Instasize AI",
     type: "app",
-    version: "v17.70",
-    dev: "RAFALTECH",
-    cat: "Apps \u2022 Communication",
-    meta: "\u2B50 4.5 (62MB)",
-    rating: 4.5,
-    size: "62MB",
+    version: "v5.6.1",
+    dev: "instasize-inc",
+    cat: "Apps \u2022 photo editor",
+    meta: "\u2B50 4.3 (33MB)",
+    rating: 4.3,
+    size: "33MB",
     updated: true,
     featured: false,
-    imgUrl: "https://apps2app.com/wp-content/uploads/2026/03/WhatsApp-Plus-150x150.png",
-    downloadUrl: "https://apps2app.com/whatsapp-plus-apk/download/"
+    imgUrl: "https://apps2app.com/wp-content/uploads/2026/04/instasize-ai-photo-editor-150x150.png",
+    downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/Instasize_v5.6.1_431_Premium-APPS2APP.COM.apk"
   },
   {
-    id: "pubg-mobile",
-    name: "PUBG Mobile",
-    type: "game",
-    version: "v3.5",
-    dev: "Tencent Games",
-    cat: "Games \u2022 Battle Royale",
-    meta: "\u2B50 4.6 (2.1GB)",
-    rating: 4.6,
-    size: "2.1GB",
+    id: "psiphon-pro",
+    name: "Psiphon Pro",
+    type: "app",
+    version: "v479",
+    dev: "Psiphon Inc.",
+    cat: "app \u2022 VPN",
+    meta: "\u2B50 5.5 (29MB)",
+    rating: 5.5,
+    size: "29MB",
     updated: false,
     featured: false,
-    imgUrl: "https://apps2app.com/wp-content/uploads/2026/03/PUBG-Mobile-150x150.png",
-    downloadUrl: "https://apps2app.com/pubg-mobile-mod-apk/download/"
+    imgUrl: "https://apps2app.com/wp-content/uploads/2026/01/psiphon-vpn-freedom-online-150x150.png",
+    downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/Psiphon_Pro_v479_Subscribed-APPS2APP.COM.apk"
   },
   {
     id: "telegram-premium",
@@ -1401,8 +1447,8 @@ const appsDatabase = Object.freeze([
     name: "Truecaller",
     type: "app",
     version: "v26.27.5",
-    dev: "King",
-    cat: "Games \u2022 Puzzle",
+    dev: "Truecaller AB",
+    cat: "app \u2022 Communication",
     meta: "\u2B50 4.4 (104MB)",
     rating: 4.4,
     size: "104MB",
@@ -1410,17 +1456,41 @@ const appsDatabase = Object.freeze([
     featured: true,
     imgUrl: "https://apps2app.com/wp-content/uploads/2026/03/truecaller-phone-call-blocker-150x150.png",
     downloadUrl: "https://files.modapkdl.com/ROOT/All%20Documents%20File/Folder%202/Truecaller_Premium_v26.26.6_(2626006)-APPS2APP.COM.apk"
+  },
+  {
+    id: "free-fire-max",
+    name: "Free Fire Max",
+    type: "game",
+    version: "v2.126.1",
+    dev: "GARENA",
+    cat: "Game \u2022 Survival",
+    meta: "\u2B50 4.4 (559MB)",
+    rating: 4.4,
+    size: "559MB",
+    updated: true,
+    featured: true,
+    imgUrl: "https://apk.dog/images:bz03OXBpYmwmbD1nbGYmaD1wbmcmZj1HbGk5MCZpPTk",
+    downloadUrl: "https://d.apkpure.net/b/XAPK/com.dts.freefiremax?version=latest"
   }
 ]);
 
 /* =============================================
-   STATE
+   STATE MANAGEMENT
    ============================================= */
 let currentFilter = 'all';
 let currentSearch = '';
 let currentSort = 'default';
 let heroIndex = 0;
 let heroAutoplay = null;
+let bookmarkedIds = JSON.parse(localStorage.getItem('omni_bookmarks')) || [];
+
+/* =============================================
+   OMNIMOD FILTER LOGIC (तेरी वेबसाइट फ़िल्टर इंजन)
+   ============================================= */
+function cleanAndFormatSource(appName) {
+  const brandWebsite = "omnimod.com";
+  return `${brandWebsite} — ${appName}`;
+}
 
 /* =============================================
    DOM REFERENCES
@@ -1436,6 +1506,53 @@ const heroDots = document.getElementById('heroDots');
 const heroPrev = document.getElementById('heroPrev');
 const heroNext = document.getElementById('heroNext');
 const toastContainer = document.getElementById('toastContainer');
+
+const btnNotif = document.getElementById('btnNotifications');
+const btnBook = document.getElementById('btnBookmarks');
+const btnSet = document.getElementById('btnSettings');
+const dropNotif = document.getElementById('dropNotifications');
+const dropBook = document.getElementById('dropBookmarks');
+const dropSet = document.getElementById('dropSettings');
+const notifBadge = document.getElementById('notifBadge');
+const bookmarksList = document.getElementById('bookmarksList');
+const toggleAura = document.getElementById('toggleAura');
+
+// Support System DOM
+const supportModal = document.getElementById('supportModal');
+const btnSupportOpen = document.getElementById('btnSupportOpen');
+const btnCancelSupport = document.getElementById('btnCancelSupport');
+const supportForm = document.getElementById('supportForm');
+const supportTextarea = document.getElementById('supportTextarea');
+
+/* =============================================
+   HEAT CUSTOMER SUPPORT BOX LOGIC
+   ============================================= */
+btnSupportOpen.addEventListener('click', () => {
+  supportModal.classList.add('show');
+  supportTextarea.focus();
+});
+
+function closeSupportModal() {
+  supportModal.classList.remove('show');
+  supportForm.reset();
+}
+
+btnCancelSupport.addEventListener('click', closeSupportModal);
+supportModal.addEventListener('click', (e) => { if (e.target === supportModal) closeSupportModal(); });
+
+supportForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const userMessage = supportTextarea.value.trim();
+  if(userMessage) {
+    showToast("Ticket submitted! Opening Gmail...");
+    closeSupportModal();
+    
+    // Redirecting to mail client safely
+    setTimeout(() => {
+      window.location.href = `mailto:support@omnimod.com?subject=OmniMod Heat Support Ticket&body=${encodeURIComponent(userMessage)}`;
+    }, 800);
+  }
+});
 
 /* =============================================
    UTILITY: TOAST NOTIFICATION
@@ -1463,7 +1580,84 @@ function handleDownload(app) {
 }
 
 /* =============================================
-   HERO SLIDER
+   BOOKMARK LOGIC MECHANICS
+   ============================================= */
+function toggleBookmark(appId, event) {
+  if(event) event.stopPropagation();
+  const index = bookmarkedIds.indexOf(appId);
+  const app = appsDatabase.find(a => a.id === appId);
+  
+  if (index > -1) {
+    bookmarkedIds.splice(index, 1);
+    showToast(`${app.name} removed from bookmarks.`);
+  } else {
+    bookmarkedIds.push(appId);
+    showToast(`${app.name} saved to bookmarks.`);
+  }
+  localStorage.setItem('omni_bookmarks', JSON.stringify(bookmarkedIds));
+  renderGrid();
+  updateBookmarksDropdown();
+}
+
+function updateBookmarksDropdown() {
+  if (bookmarkedIds.length === 0) {
+    bookmarksList.innerHTML = `<div style="font-size:12px; color:var(--fg-muted); text-align:center; padding:10px;">No bookmarks added yet.</div>`;
+    return;
+  }
+  
+  const bookmarkedApps = appsDatabase.filter(a => bookmarkedIds.includes(a.id));
+  bookmarksList.innerHTML = bookmarkedApps.map(app => `
+    <div class="dropdown-item" style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:600; cursor:pointer;" onclick="handleDownload(appsDatabase[${appsDatabase.indexOf(app)}])">${app.name}</span>
+      <i class="fa-solid fa-trash" style="color:var(--accent-pink); cursor:pointer; font-size:11px;" onclick="toggleBookmark('${app.id}', event)"></i>
+    </div>
+  `).join('');
+}
+
+/* =============================================
+   HEADER DROPDOWNS CONTROLLER
+   ============================================= */
+function closeAllDropdowns() {
+  [dropNotif, dropBook, dropSet].forEach(d => d.classList.remove('show'));
+  [btnNotif, btnBook, btnSet].forEach(b => b.classList.remove('active'));
+}
+
+function setupDropdown(button, dropdown) {
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isShowing = dropdown.classList.contains('show');
+    closeAllDropdowns();
+    if (!isShowing) {
+      dropdown.classList.add('show');
+      button.classList.add('active');
+    }
+  });
+}
+
+setupDropdown(btnNotif, dropNotif);
+setupDropdown(btnBook, dropBook);
+setupDropdown(btnSet, dropSet);
+
+btnNotif.addEventListener('click', () => {
+  notifBadge.style.opacity = '0';
+  setTimeout(() => notifBadge.style.display = 'none', 300);
+});
+
+document.addEventListener('click', () => closeAllDropdowns());
+[dropNotif, dropBook, dropSet].forEach(d => d.addEventListener('click', (e) => e.stopPropagation()));
+
+toggleAura.addEventListener('change', () => {
+  if (toggleAura.checked) {
+    document.body.classList.add('aura-animate');
+    showToast("Ambient aura engine activated.");
+  } else {
+    document.body.classList.remove('aura-animate');
+    showToast("Aura layout animations paused.");
+  }
+});
+
+/* =============================================
+   HERO SLIDER (With omnimod.com filter)
    ============================================= */
 function getFeaturedApps() {
   return appsDatabase.filter(a => a.featured);
@@ -1475,6 +1669,9 @@ function renderHero() {
 
   heroTrack.innerHTML = featured.map((app, i) => {
     const bc = badgeColors[i % badgeColors.length];
+    // Filter applied here to override standard source displaying
+    const filteredDisplayName = cleanAndFormatSource(app.name);
+    
     return `
       <div class="hero-slide" role="tabpanel" aria-label="Featured: ${app.name}">
         <div class="hero-card" onclick="handleDownload(appsDatabase[${appsDatabase.indexOf(app)}])">
@@ -1489,7 +1686,7 @@ function renderHero() {
                 <span class="badge-mod ${bc}">${app.version}</span>
                 ${app.updated ? '<span class="badge-mod green">Updated</span>' : ''}
               </div>
-              <div class="hero-name">${app.name}</div>
+              <div class="hero-name" title="${filteredDisplayName}">${filteredDisplayName}</div>
               <div class="hero-dev">${app.dev} &mdash; ${app.cat}</div>
               <div class="hero-meta">
                 <span class="rating"><i class="fa-solid fa-star"></i> ${app.rating}</span>
@@ -1510,7 +1707,6 @@ function renderHero() {
     `<button class="slider-dot${i === 0 ? ' active' : ''}" role="tab" aria-label="Slide ${i + 1}" data-index="${i}"></button>`
   ).join('');
 
-  /* Dot click handlers */
   heroDots.querySelectorAll('.slider-dot').forEach(dot => {
     dot.addEventListener('click', () => {
       heroIndex = parseInt(dot.dataset.index);
@@ -1552,11 +1748,9 @@ heroNext.addEventListener('click', () => { heroIndex++; updateHero(); resetAutop
 function getFilteredData() {
   let data = [...appsDatabase];
 
-  /* Category filter */
   if (currentFilter === 'apps') data = data.filter(a => a.type === 'app');
   else if (currentFilter === 'games') data = data.filter(a => a.type === 'game');
 
-  /* Search filter */
   if (currentSearch.trim()) {
     const q = currentSearch.toLowerCase().trim();
     data = data.filter(a =>
@@ -1567,10 +1761,10 @@ function getFilteredData() {
     );
   }
 
-  /* Sort */
   if (currentSort === 'name-asc') data.sort((a, b) => a.name.localeCompare(b.name));
   else if (currentSort === 'name-desc') data.sort((a, b) => b.name.localeCompare(a.name));
   else if (currentSort === 'rating') data.sort((a, b) => b.rating - a.rating);
+  else if (currentSort === 'bookmarked') data = data.filter(a => bookmarkedIds.includes(a.id));
 
   return data;
 }
@@ -1602,7 +1796,7 @@ function renderFilterTabs() {
 }
 
 /* =============================================
-   APP GRID RENDERING
+   APP GRID RENDERING (With Filter Implemented)
    ============================================= */
 function renderGrid() {
   const data = getFilteredData();
@@ -1621,20 +1815,33 @@ function renderGrid() {
 
   appGridEl.innerHTML = data.map(app => {
     const idx = appsDatabase.indexOf(app);
+    const isSaved = bookmarkedIds.includes(app.id) ? 'is-bookmarked' : '';
+    
+    // फ़िल्टर यहाँ काम कर रहा है - कचरा यूआरएल की जगह तेरी वेबसाइट का नाम
+    const filteredNameString = cleanAndFormatSource(app.name);
+
     return `
-      <article class="app-card" data-idx="${idx}" tabindex="0" aria-label="${app.name} by ${app.dev}">
+      <article class="app-card ${isSaved}" data-idx="${idx}" tabindex="0" aria-label="${app.name} by ${app.dev}" onclick="handleDownload(appsDatabase[${idx}])">
         <div class="app-card-icon">
           <img src="${app.imgUrl}" alt="${app.name}" loading="lazy">
         </div>
         <div class="app-card-body">
           <div class="app-card-top">
-            <span class="app-card-name">${app.name}</span>
-            <span class="app-card-version">${app.version}</span>
+            <div class="app-card-name-wrap">
+              <span class="app-card-name" title="${filteredNameString}">${filteredNameString}</span>
+              <span class="app-card-version">${app.version}</span>
+            </div>
+            <div class="app-card-actions">
+               <button class="app-card-btn-inline" aria-label="Bookmark mod" onclick="toggleBookmark('${app.id}', event)">
+                 <i class="fa-${bookmarkedIds.includes(app.id) ? 'solid' : 'regular'} fa-bookmark"></i>
+               </button>
+            </div>
           </div>
           <div class="app-card-dev">${app.dev} &mdash; ${app.cat}</div>
           <div class="app-card-bottom">
             <span class="app-card-tag rating"><i class="fa-solid fa-star"></i> ${app.rating}</span>
             <span class="app-card-tag"><i class="fa-solid fa-hard-drive"></i> ${app.size}</span>
+            <span class="app-card-tag bookmark-star"><i class="fa-solid fa-bookmark"></i> Saved</span>
             ${app.updated ? '<span class="app-card-tag updated"><i class="fa-solid fa-circle-arrow-up"></i> Updated</span>' : ''}
           </div>
         </div>
@@ -1645,7 +1852,6 @@ function renderGrid() {
     `;
   }).join('');
 
-  /* Attach 3D tilt effect to cards */
   attachTiltEffect();
 }
 
@@ -1670,7 +1876,6 @@ function attachTiltEffect() {
       card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
     });
 
-    /* Keyboard accessibility: Enter triggers download */
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const idx = parseInt(card.dataset.idx);
@@ -1757,7 +1962,6 @@ function initScrollReveal() {
 function initMouseParallax() {
   const spots = document.querySelectorAll('.aura-spot');
   let mouseX = 0, mouseY = 0;
-  let rafId = null;
 
   document.addEventListener('mousemove', (e) => {
     mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -1769,10 +1973,9 @@ function initMouseParallax() {
       const factor = (i + 1) * 8;
       spot.style.translate = `${mouseX * factor}px ${mouseY * factor}px`;
     });
-    rafId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   }
 
-  /* Respect reduced motion */
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     animate();
   }
@@ -1790,6 +1993,7 @@ function init() {
   animateStats();
   initScrollReveal();
   initMouseParallax();
+  updateBookmarksDropdown();
 }
 
 document.addEventListener('DOMContentLoaded', init);
