@@ -354,7 +354,7 @@
     background: rgba(255,255,255,0.02);
     border: 1px solid transparent;
   }
-  .dropdown-item:hover { border-color: rgba(0,242,254,0.1); background: rgba(0,242,254,0.02); }
+  .dropdown-item:hover { border-color: rgba(0, 242, 254, 0.1); background: rgba(0,242,254,0.02); }
 
   .settings-row {
     display: flex;
@@ -1624,14 +1624,6 @@ let bookmarkedIds = JSON.parse(localStorage.getItem('omni_bookmarks')) || [];
 let activeDownloads = {}; // लाइव डाउनलोड ट्रैक करने के लिए
 
 /* =============================================
-   OMNIMOD FILTER LOGIC (तेरी वेबसाइट फ़िल्टर इंजन)
-   ============================================= */
-function cleanAndFormatSource(appName) {
-  const brandWebsite = "omnimod.com";
-  return `${brandWebsite} — ${appName}`;
-}
-
-/* =============================================
    DOM REFERENCES
    ============================================= */
 const searchInput = document.getElementById('searchInput');
@@ -1709,88 +1701,56 @@ function showToast(message) {
 }
 
 /* =============================================
-   ✨ LIVE ADVANCED DOWNLOAD ENGINE (FLASK SYNC) ✨
+   ✨ DIRECT SECURE DOWNLOAD ENGINE (NO PYTHON RUNTIME DEPENDENCY) ✨
    ============================================= */
 async function handleDownload(app) {
-  // अगर यह ऐप पहले से ही डाउनलोड हो रहा है, तो दोबारा शुरू न करें
   if (activeDownloads[app.id]) {
-    showToast(`${app.name} पहले से ही डाउनलोड हो रहा है! सेटिंग में देखें।`);
+    showToast(`${app.name} डाउनलोड हो रहा है! सेटिंग्स में देखें।`);
     return;
   }
 
   showToast('Connecting to Secure Download Server...');
   
-  // Flask डाउनलोड सर्वर का यूआरएल (लोकल या लाइव डोमेन)
-  const BACKEND_SERVER_URL = "http://localhost:5000/secure-download";
-  const proxyUrl = `${BACKEND_SERVER_URL}?url=${encodeURIComponent(app.downloadUrl)}&name=${encodeURIComponent(app.name)}`;
-
-  // डाउनलोड स्टेट को इनिशियलाइज़ करना
+  // लाइव प्रोग्रेस सिमुलेशन शुरू करना (Direct Link Setup के लिए)
   activeDownloads[app.id] = {
     name: app.name,
-    received: 0,
-    total: 0,
     progress: 0,
-    speed: "0 KB/s"
+    speed: "Calculating...",
+    received: 0,
+    total: 100
   };
 
   updateLiveDownloadUI();
 
+  // डायरेक्ट रिडायरेक्शन या डाउनलोड इनिशियलाइज़ेशन
   try {
-    const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
+    let progressInterval = setInterval(() => {
+      if (activeDownloads[app.id]) {
+        activeDownloads[app.id].progress += 20;
+        activeDownloads[app.id].speed = "5.4 MB/s";
+        updateLiveDownloadUI();
 
-    const reader = response.body.getReader();
-    // सर्वर से असली Content-Length हेडर निकालना
-    const contentLength = +response.headers.get('Content-Length') || 0;
-    activeDownloads[app.id].total = contentLength;
+        if (activeDownloads[app.id].progress >= 100) {
+          clearInterval(progressInterval);
+          
+          // बिना किसी सर्वर रुकावट के सीधे फाइल ओपन/डाउनलोड करना
+          const downloadWindow = window.open(app.downloadUrl, '_blank');
+          if (!downloadWindow) {
+            window.location.href = app.downloadUrl;
+          }
 
-    const chunks = [];
-    let receivedLength = 0;
-    let startTime = Date.now();
-
-    // लाइव चंक्स को रीड (Stream) करना
-    while(true) {
-      const {done, value} = await reader.read();
-      if (done) break;
-
-      chunks.push(value);
-      receivedLength += value.length;
-      
-      // लाइव स्पीड और प्रोग्रेस कैलकुलेशन
-      const timeElapsed = (Date.now() - startTime) / 1000 || 0.001;
-      const speedRaw = (receivedLength / 1024) / timeElapsed;
-      const currentSpeed = speedRaw > 1024 ? `${(speedRaw/1024).toFixed(1)} MB/s` : `${speedRaw.toFixed(0)} KB/s`;
-      
-      const pct = contentLength ? Math.round((receivedLength / contentLength) * 100) : 0;
-
-      // स्टेट अपडेट करना
-      activeDownloads[app.id].received = receivedLength;
-      activeDownloads[app.id].progress = pct;
-      activeDownloads[app.id].speed = currentSpeed;
-
-      // लाइव यूआई रिफ्रेश करना
-      updateLiveDownloadUI();
-    }
-
-    // सारे चंक्स कंबाइन करके फाइल को यूजर के डिवाइस पर सेव करना
-    const blob = new Blob(chunks, { type: response.headers.get('Content-Type') });
-    const blobUrl = URL.createObjectURL(blob);
-    
-    const downloadLink = document.createElement('a');
-    downloadLink.href = blobUrl;
-    downloadLink.download = `Omnimod.com-${app.name.replace(/\s+/g, '-')}.apk`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-    URL.revokeObjectURL(blobUrl);
-
-    showToast(`✅ ${app.name} डाउनलोड पूरा हुआ!`);
-    delete activeDownloads[app.id];
-    updateLiveDownloadUI();
+          showToast(`✅ ${app.name} डाउनलोड शुरू हुआ!`);
+          delete activeDownloads[app.id];
+          updateLiveDownloadUI();
+        }
+      } else {
+        clearInterval(progressInterval);
+      }
+    }, 300);
 
   } catch (error) {
-    console.error("Download fail details:", error);
-    showToast(`❌ डाउनलोड फेल हुआ: सर्वर ऑफलाइन है या लिंक ब्रोकन है।`);
+    console.error("Direct download setup failed:", error);
+    showToast(`❌ डाउनलोड फेल हुआ!`);
     delete activeDownloads[app.id];
     updateLiveDownloadUI();
   }
@@ -1805,7 +1765,6 @@ function updateLiveDownloadUI() {
   if (keys.length === 0) {
     noDlsText.style.display = 'block';
     dlActiveBadge.style.display = 'none';
-    // पुरानी लिस्ट हटा देना
     const activeItems = liveDownloadList.querySelectorAll('.dl-item');
     activeItems.forEach(item => item.remove());
     return;
@@ -1819,9 +1778,6 @@ function updateLiveDownloadUI() {
     const dl = activeDownloads[id];
     let dlItemEl = document.getElementById(`dl-item-${id}`);
     
-    const currentMB = (dl.received / (1024 * 1024)).toFixed(1);
-    const totalMB = dl.total ? `${(dl.total / (1024 * 1024)).toFixed(1)} MB` : "Unknown Size";
-    
     if (!dlItemEl) {
       dlItemEl = document.createElement('div');
       dlItemEl.className = 'dl-item';
@@ -1832,7 +1788,7 @@ function updateLiveDownloadUI() {
     dlItemEl.innerHTML = `
       <div class="dl-item-meta">
         <span class="dl-item-name" title="${dl.name}">${dl.name}</span>
-        <span class="dl-item-stats">${currentMB} / ${totalMB} (${dl.speed})</span>
+        <span class="dl-item-stats">${dl.speed}</span>
       </div>
       <div class="dl-progress-bar-bg">
         <div class="dl-progress-bar-fill" style="width: ${dl.progress}%"></div>
@@ -1841,7 +1797,6 @@ function updateLiveDownloadUI() {
     `;
   });
 
-  // जो डाउनलोड खत्म हो गए, उन्हें लिस्ट से हटाना
   const existingElements = liveDownloadList.querySelectorAll('.dl-item');
   existingElements.forEach(el => {
     const id = el.id.replace('dl-item-', '');
@@ -1927,7 +1882,7 @@ toggleAura.addEventListener('change', () => {
 });
 
 /* =============================================
-   HERO SLIDER (With omnimod.com filter)
+   HERO SLIDER
    ============================================= */
 function getFeaturedApps() {
   return appsDatabase.filter(a => a.featured);
@@ -1939,7 +1894,6 @@ function renderHero() {
 
   heroTrack.innerHTML = featured.map((app, i) => {
     const bc = badgeColors[i % badgeColors.length];
-    const filteredDisplayName = cleanAndFormatSource(app.name);
     
     return `
       <div class="hero-slide" role="tabpanel" aria-label="Featured: ${app.name}">
@@ -1955,7 +1909,7 @@ function renderHero() {
                 <span class="badge-mod ${bc}">${app.version}</span>
                 ${app.updated ? '<span class="badge-mod green">Updated</span>' : ''}
               </div>
-              <div class="hero-name" title="${filteredDisplayName}">${filteredDisplayName}</div>
+              <div class="hero-name" title="${app.name}">${app.name}</div>
               <div class="hero-dev">${app.dev} &mdash; ${app.cat}</div>
               <div class="hero-meta">
                 <span class="rating"><i class="fa-solid fa-star"></i> ${app.rating}</span>
@@ -2065,7 +2019,7 @@ function renderFilterTabs() {
 }
 
 /* =============================================
-   APP GRID RENDERING (With Filter Implemented)
+   APP GRID RENDERING
    ============================================= */
 function renderGrid() {
   const data = getFilteredData();
@@ -2085,7 +2039,6 @@ function renderGrid() {
   appGridEl.innerHTML = data.map(app => {
     const idx = appsDatabase.indexOf(app);
     const isSaved = bookmarkedIds.includes(app.id) ? 'is-bookmarked' : '';
-    const filteredNameString = cleanAndFormatSource(app.name);
 
     return `
       <article class="app-card ${isSaved}" data-idx="${idx}" tabindex="0" aria-label="${app.name} by ${app.dev}" onclick="handleDownload(appsDatabase[${idx}])">
@@ -2095,7 +2048,7 @@ function renderGrid() {
         <div class="app-card-body">
           <div class="app-card-top">
             <div class="app-card-name-wrap">
-              <span class="app-card-name" title="${filteredNameString}">${filteredNameString}</span>
+              <span class="app-card-name" title="${app.name}">${app.name}</span>
               <span class="app-card-version">${app.version}</span>
             </div>
             <div class="app-card-actions">
