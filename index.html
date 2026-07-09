@@ -306,11 +306,15 @@
     transition: all 0.3s ease;
   }
 
+  .nav-btn .badge.green-badge {
+    background: var(--accent-green) !important;
+  }
+
   .nav-dropdown {
     position: absolute;
     top: 55px;
     right: 0;
-    width: 320px;
+    width: 340px;
     background: rgba(12, 18, 28, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(0, 242, 254, 0.15);
@@ -336,7 +340,7 @@
   }
 
   .dropdown-body {
-    max-height: 240px;
+    max-height: 280px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -384,6 +388,70 @@
     border-radius: 50%;
   }
   .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* === LIVE DOWNLOAD MANAGER UI === */
+  .dl-manager-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dl-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .dl-item {
+    background: rgba(6, 9, 14, 0.6);
+    border: 1px solid rgba(0, 242, 254, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .dl-item-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .dl-item-name {
+    font-weight: 700;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dl-item-stats {
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+
+  .dl-progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .dl-progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+    border-radius: 10px;
+    transition: width 0.2s ease;
+  }
 
   /* === HERO SECTION === */
   .hero-section {
@@ -1039,7 +1107,7 @@
       <div class="nav-actions">
         <button class="nav-btn" id="btnNotifications" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge" id="notifBadge">3</span></button>
         <button class="nav-btn" id="btnBookmarks" aria-label="Bookmarks"><i class="fa-regular fa-bookmark"></i></button>
-        <button class="nav-btn" id="btnSettings" aria-label="Settings"><i class="fa-solid fa-gear"></i></button>
+        <button class="nav-btn" id="btnSettings" aria-label="Settings"><i class="fa-solid fa-gear"></i><span class="badge green-badge" id="dlActiveBadge" style="display:none;">0</span></button>
 
         <div class="nav-dropdown" id="dropNotifications">
           <div class="dropdown-header">Latest Updates</div>
@@ -1068,6 +1136,16 @@
               </label>
             </div>
             <div style="font-size:11px; color:var(--fg-muted); margin-top:5px;">Turning off lights can increase UI performance on low-end hardware.</div>
+            
+            <div class="dl-manager-title">
+              <i class="fa-solid fa-circle-down"></i> Live Download Manager
+            </div>
+            <div class="dl-list" id="liveDownloadList">
+              <div style="font-size:11px; color:var(--fg-muted); text-align:center; padding:10px;" id="noDlsText">
+                No active downloads.
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1543,6 +1621,7 @@ let currentSort = 'default';
 let heroIndex = 0;
 let heroAutoplay = null;
 let bookmarkedIds = JSON.parse(localStorage.getItem('omni_bookmarks')) || [];
+let activeDownloads = {}; // लाइव डाउनलोड ट्रैक करने के लिए
 
 /* =============================================
    OMNIMOD FILTER LOGIC (तेरी वेबसाइट फ़िल्टर इंजन)
@@ -1577,6 +1656,11 @@ const notifBadge = document.getElementById('notifBadge');
 const bookmarksList = document.getElementById('bookmarksList');
 const toggleAura = document.getElementById('toggleAura');
 
+// Upgraded Download Manager DOMs
+const liveDownloadList = document.getElementById('liveDownloadList');
+const noDlsText = document.getElementById('noDlsText');
+const dlActiveBadge = document.getElementById('dlActiveBadge');
+
 // Support System DOM
 const supportModal = document.getElementById('supportModal');
 const btnSupportOpen = document.getElementById('btnSupportOpen');
@@ -1607,7 +1691,6 @@ supportForm.addEventListener('submit', (e) => {
     showToast("Ticket submitted! Opening Gmail...");
     closeSupportModal();
     
-    // Redirecting to mail client safely
     setTimeout(() => {
       window.location.href = `mailto:takano3dhunter@gmail.com?subject=OmniMod Heat Support Ticket&body=${encodeURIComponent(userMessage)}`;
     }, 800);
@@ -1626,17 +1709,144 @@ function showToast(message) {
 }
 
 /* =============================================
-   UTILITY: TRIGGER DOWNLOAD
+   ✨ LIVE ADVANCED DOWNLOAD ENGINE (FLASK SYNC) ✨
    ============================================= */
-function handleDownload(app) {
-  showToast('Starting download: ' + app.name);
-  const a = document.createElement('a');
-  a.href = app.downloadUrl;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+async function handleDownload(app) {
+  // अगर यह ऐप पहले से ही डाउनलोड हो रहा है, तो दोबारा शुरू न करें
+  if (activeDownloads[app.id]) {
+    showToast(`${app.name} पहले से ही डाउनलोड हो रहा है! सेटिंग में देखें।`);
+    return;
+  }
+
+  showToast('Connecting to Secure Download Server...');
+  
+  // Flask डाउनलोड सर्वर का यूआरएल (लोकल या लाइव डोमेन)
+  const BACKEND_SERVER_URL = "http://localhost:5000/secure-download";
+  const proxyUrl = `${BACKEND_SERVER_URL}?url=${encodeURIComponent(app.downloadUrl)}&name=${encodeURIComponent(app.name)}`;
+
+  // डाउनलोड स्टेट को इनिशियलाइज़ करना
+  activeDownloads[app.id] = {
+    name: app.name,
+    received: 0,
+    total: 0,
+    progress: 0,
+    speed: "0 KB/s"
+  };
+
+  updateLiveDownloadUI();
+
+  try {
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
+
+    const reader = response.body.getReader();
+    // सर्वर से असली Content-Length हेडर निकालना
+    const contentLength = +response.headers.get('Content-Length') || 0;
+    activeDownloads[app.id].total = contentLength;
+
+    const chunks = [];
+    let receivedLength = 0;
+    let startTime = Date.now();
+
+    // लाइव चंक्स को रीड (Stream) करना
+    while(true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+
+      chunks.push(value);
+      receivedLength += value.length;
+      
+      // लाइव स्पीड और प्रोग्रेस कैलकुलेशन
+      const timeElapsed = (Date.now() - startTime) / 1000 || 0.001;
+      const speedRaw = (receivedLength / 1024) / timeElapsed;
+      const currentSpeed = speedRaw > 1024 ? `${(speedRaw/1024).toFixed(1)} MB/s` : `${speedRaw.toFixed(0)} KB/s`;
+      
+      const pct = contentLength ? Math.round((receivedLength / contentLength) * 100) : 0;
+
+      // स्टेट अपडेट करना
+      activeDownloads[app.id].received = receivedLength;
+      activeDownloads[app.id].progress = pct;
+      activeDownloads[app.id].speed = currentSpeed;
+
+      // लाइव यूआई रिफ्रेश करना
+      updateLiveDownloadUI();
+    }
+
+    // सारे चंक्स कंबाइन करके फाइल को यूजर के डिवाइस पर सेव करना
+    const blob = new Blob(chunks, { type: response.headers.get('Content-Type') });
+    const blobUrl = URL.createObjectURL(blob);
+    
+    const downloadLink = document.createElement('a');
+    downloadLink.href = blobUrl;
+    downloadLink.download = `Omnimod.com-${app.name.replace(/\s+/g, '-')}.apk`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(blobUrl);
+
+    showToast(`✅ ${app.name} डाउनलोड पूरा हुआ!`);
+    delete activeDownloads[app.id];
+    updateLiveDownloadUI();
+
+  } catch (error) {
+    console.error("Download fail details:", error);
+    showToast(`❌ डाउनलोड फेल हुआ: सर्वर ऑफलाइन है या लिंक ब्रोकन है।`);
+    delete activeDownloads[app.id];
+    updateLiveDownloadUI();
+  }
+}
+
+/* =============================================
+   LIVE DOWNLOAD MANAGER UI REFRESHER
+   ============================================= */
+function updateLiveDownloadUI() {
+  const keys = Object.keys(activeDownloads);
+  
+  if (keys.length === 0) {
+    noDlsText.style.display = 'block';
+    dlActiveBadge.style.display = 'none';
+    // पुरानी लिस्ट हटा देना
+    const activeItems = liveDownloadList.querySelectorAll('.dl-item');
+    activeItems.forEach(item => item.remove());
+    return;
+  }
+
+  noDlsText.style.display = 'none';
+  dlActiveBadge.style.display = 'flex';
+  dlActiveBadge.textContent = keys.length;
+
+  keys.forEach(id => {
+    const dl = activeDownloads[id];
+    let dlItemEl = document.getElementById(`dl-item-${id}`);
+    
+    const currentMB = (dl.received / (1024 * 1024)).toFixed(1);
+    const totalMB = dl.total ? `${(dl.total / (1024 * 1024)).toFixed(1)} MB` : "Unknown Size";
+    
+    if (!dlItemEl) {
+      dlItemEl = document.createElement('div');
+      dlItemEl.className = 'dl-item';
+      dlItemEl.id = `dl-item-${id}`;
+      liveDownloadList.appendChild(dlItemEl);
+    }
+
+    dlItemEl.innerHTML = `
+      <div class="dl-item-meta">
+        <span class="dl-item-name" title="${dl.name}">${dl.name}</span>
+        <span class="dl-item-stats">${currentMB} / ${totalMB} (${dl.speed})</span>
+      </div>
+      <div class="dl-progress-bar-bg">
+        <div class="dl-progress-bar-fill" style="width: ${dl.progress}%"></div>
+      </div>
+      <div style="font-size: 9px; text-align:right; color:var(--accent-cyan); margin-top:2px; font-family:var(--font-mono);">${dl.progress}%</div>
+    `;
+  });
+
+  // जो डाउनलोड खत्म हो गए, उन्हें लिस्ट से हटाना
+  const existingElements = liveDownloadList.querySelectorAll('.dl-item');
+  existingElements.forEach(el => {
+    const id = el.id.replace('dl-item-', '');
+    if (!activeDownloads[id]) el.remove();
+  });
 }
 
 /* =============================================
@@ -1729,7 +1939,6 @@ function renderHero() {
 
   heroTrack.innerHTML = featured.map((app, i) => {
     const bc = badgeColors[i % badgeColors.length];
-    // Filter applied here to override standard source displaying
     const filteredDisplayName = cleanAndFormatSource(app.name);
     
     return `
@@ -1876,8 +2085,6 @@ function renderGrid() {
   appGridEl.innerHTML = data.map(app => {
     const idx = appsDatabase.indexOf(app);
     const isSaved = bookmarkedIds.includes(app.id) ? 'is-bookmarked' : '';
-    
-    // फ़िल्टर यहाँ काम कर रहा है - कचरा यूआरएल की जगह तेरी वेबसाइट का नाम
     const filteredNameString = cleanAndFormatSource(app.name);
 
     return `
