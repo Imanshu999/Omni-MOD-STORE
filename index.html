@@ -1503,10 +1503,10 @@ let heroAutoplay = null;
 let bookmarkedIds = JSON.parse(localStorage.getItem('omni_bookmarks')) || [];
 
 /* =============================================
-   OMNIMOD FILTER LOGIC
+   OMNIMOD FILTER LOGIC (UPDATED WITH YOUR BRAND)
    ============================================= */
 function cleanAndFormatSource(appName) {
-  const brandWebsite = "omnimod.com";
+  const brandWebsite = "baunimallstore.com";
   return `${brandWebsite} — ${appName}`;
 }
 
@@ -1584,12 +1584,17 @@ function showToast(message) {
 }
 
 /* =============================================
-   UTILITY: TRIGGER DOWNLOAD
+   UTILITY: TRIGGER DOWNLOAD WITH CUSTOM FILE NAME
    ============================================= */
 function handleDownload(app) {
   showToast('Starting download: ' + app.name);
   const a = document.createElement('a');
   a.href = app.downloadUrl;
+  
+  // HTML5 download property helps show correct file name instead of long server strings
+  const formattedFileName = `baunimallstore.com_${app.name.replace(/\s+/g, '_')}_${app.version}.apk`;
+  a.setAttribute('download', formattedFileName);
+  
   a.target = '_blank';
   a.rel = 'noopener noreferrer';
   document.body.appendChild(a);
