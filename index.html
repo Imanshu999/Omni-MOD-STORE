@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Omni Mod Store — Premium APK & Game Mods</title>
-
-<link rel="icon" type="image/jpeg" href="Screenshot_2026_0708_223931.jpg">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -314,7 +311,7 @@
     top: 55px;
     right: 0;
     width: 320px;
-    background: rgba(12, 18, 25, 0.95);
+    background: rgba(12, 18, 28, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(0, 242, 254, 0.15);
     border-radius: var(--radius);
@@ -1323,7 +1320,37 @@ const appsDatabase = Object.freeze([
     updated: true,
     featured: true,
     imgUrl: "https://apps2app.com/wp-content/uploads/2026/04/grand-theft-auto-iii-150x150.png",
-    downloadUrl: "https://dc535.4sync.com/download/LjLpPKDm/GTA-III-v110106-mod.apk?tsid=20260709-010235-7b48b318&sbsr=f0ec65f454547df387a12c315bdad210b85&bip=MjIzLjIyOC43OC4xMDk&lgfp=20"
+    downloadUrl: "https://dc438.4sync.com/download/LjLpPKDm/GTA-III-v110106-mod.apk?tsid=20260709-020831-34449fec&sbsr=f0ec65f454547df387a12c315bdad210b85&bip=MjIzLjIyOC43OC4xMDk&lgfp=20"
+  },
+  {
+    id: "gta-san-andreas -",
+    name: "GTA San Andreas",
+    type: "game",
+    version: "v1.87.0",
+    dev: "Imaanshu N.",
+    cat: "Game \u2022 media",
+    meta: "\u2B50 5.0 (4GB)",
+    rating: 5.0,
+    size: "4GB",
+    updated: true,
+    featured: false,
+    imgUrl: "https://imgcdn.latestmodapks.com/api/resize?url=https://www.latestmodapks.com/wp-content/uploads/2026/02/GTA-San-Andreas-Definitive-Edition-Mod-logo-media.webp&width=160",
+    downloadUrl: "https://dc541.4sync.com/download/UJ2Qvjvx/gta-san-andreas-definitive-edi.apk?tsid=20260709-021623-6f1e499c&sbsr=bfe6ced32f784950189c2b904a8b0613b85&bip=MjIzLjIyOC43OC4xMDk&lgfp=20"
+  },
+  {
+    id: "hoverboard-heroes-MOD",
+    name: "Hoverboard Heroes MOD",
+    type: "game",
+    version: "v1.12.0",
+    dev: "Imaanshu N.",
+    cat: "Game \u2022 running",
+    meta: "\u2B50 5.0 (190.3MB)",
+    rating: 5.0,
+    size: "190.3MB",
+    updated: true,
+    featured: false,
+    imgUrl: "https://imgcdn.latestmodapks.com/api/resize?url=https://www.latestmodapks.com/wp-content/uploads/2024/07/hoverboard-heroes-mod-logo-media.webp&width=160",
+    downloadUrl: "https://cdn901.onehost.io/2023/Hoverboard_Heroes_1.12.0_1720848811_latestmodapks.com.apk"
   },
   {
     id: "youtube-vanced",
@@ -1503,10 +1530,10 @@ let heroAutoplay = null;
 let bookmarkedIds = JSON.parse(localStorage.getItem('omni_bookmarks')) || [];
 
 /* =============================================
-   OMNIMOD FILTER LOGIC (UPDATED WITH YOUR BRAND)
+   OMNIMOD FILTER LOGIC (तेरी वेबसाइट फ़िल्टर इंजन)
    ============================================= */
 function cleanAndFormatSource(appName) {
-  const brandWebsite = "baunimallstore.com";
+  const brandWebsite = "omnimod.com";
   return `${brandWebsite} — ${appName}`;
 }
 
@@ -1584,17 +1611,12 @@ function showToast(message) {
 }
 
 /* =============================================
-   UTILITY: TRIGGER DOWNLOAD WITH CUSTOM FILE NAME
+   UTILITY: TRIGGER DOWNLOAD
    ============================================= */
 function handleDownload(app) {
   showToast('Starting download: ' + app.name);
   const a = document.createElement('a');
   a.href = app.downloadUrl;
-  
-  // HTML5 download property helps show correct file name instead of long server strings
-  const formattedFileName = `baunimallstore.com_${app.name.replace(/\s+/g, '_')}_${app.version}.apk`;
-  a.setAttribute('download', formattedFileName);
-  
   a.target = '_blank';
   a.rel = 'noopener noreferrer';
   document.body.appendChild(a);
@@ -1680,7 +1702,7 @@ toggleAura.addEventListener('change', () => {
 });
 
 /* =============================================
-   HERO SLIDER
+   HERO SLIDER (With omnimod.com filter)
    ============================================= */
 function getFeaturedApps() {
   return appsDatabase.filter(a => a.featured);
@@ -1692,6 +1714,7 @@ function renderHero() {
 
   heroTrack.innerHTML = featured.map((app, i) => {
     const bc = badgeColors[i % badgeColors.length];
+    // Filter applied here to override standard source displaying
     const filteredDisplayName = cleanAndFormatSource(app.name);
     
     return `
@@ -1818,7 +1841,7 @@ function renderFilterTabs() {
 }
 
 /* =============================================
-   APP GRID RENDERING
+   APP GRID RENDERING (With Filter Implemented)
    ============================================= */
 function renderGrid() {
   const data = getFilteredData();
@@ -1838,6 +1861,8 @@ function renderGrid() {
   appGridEl.innerHTML = data.map(app => {
     const idx = appsDatabase.indexOf(app);
     const isSaved = bookmarkedIds.includes(app.id) ? 'is-bookmarked' : '';
+    
+    // फ़िल्टर यहाँ काम कर रहा है - कचरा यूआरएल की जगह तेरी वेबसाइट का नाम
     const filteredNameString = cleanAndFormatSource(app.name);
 
     return `
