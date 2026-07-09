@@ -5,7 +5,7 @@ from flask import Flask, request, Response, stream_with_context
 app = Flask(__name__)
 
 # आपकी वेबसाइट का असली डोमेन नाम
-MY_WEBSITE_NAME = "Omnimodstore.com"
+MY_WEBSITE_NAME = "Omnimod.com"
 
 @app.route('/secure-download')
 def secure_download():
